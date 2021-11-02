@@ -1,23 +1,18 @@
 # PDF splitter
 
-This program will split a PDF vertically into N equal pages. This is useful because OneNote always exports PDFs as one long page and (robotics) professors & TAs hate that!
+Split PDF vertically based on horizontal line separators or into N pages of uniform length. From our experience, this keeps professors and TAs very happy!
 
 ## Installation
 
-You can do either
-
 ```
-pip3 install -r requirements.txt
+pip install -r requirements.txt
 ```
 
-or alternatively
-
+To run with horizontal line page separators, do
 ```
-pip3 install PyPDF2
+python splitter.py input.pdf output.pdf
 ```
-
-To run, and split a page into N pages, run the following command. input.pdf should already exist while output.pdf will be created.
-
+Otherwise, to split into N pages, do
 ```
-python3 splitter.py input.pdf output.pdf N
+python splitter.py input.pdf output.pdf N
 ```
