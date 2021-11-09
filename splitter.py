@@ -1,4 +1,4 @@
-from pdf2image import convert_from_path
+import fitz
 import matplotlib.pyplot as plt
 from pathlib import Path
 from PyPDF2 import PdfFileReader
@@ -11,8 +11,8 @@ import os
 import copy
 
 ## PARAMETERS FOR SPLIT
-ysize = 75
-min_length = .8
+ysize = 100
+min_length = .75
 
 n = 0
 if len(sys.argv) == 4:
@@ -20,7 +20,7 @@ if len(sys.argv) == 4:
     o_name = sys.argv[2]
     n = int(sys.argv[3])
 if len(sys.argv) == 3:
-    im_name = sys.argv[1]
+    i_name = sys.argv[1]
     o_name = sys.argv[2]
 else:
     print ("HELP: python3 splitter.py input.pdf output.pdf")
@@ -51,8 +51,10 @@ if n != 0:
 else:
     im_path = "page_image.jpg" # intermediate file
     # convert to image
-    pages = convert_from_path(i_name)
-    pages[0].save(im_path)
+    doc = fitz.open(i_name)
+    page = doc.loadPage(0)  # number of page
+    pix = page.get_pixmap()
+    pix.save(im_path)
 
     # convert to binary image
     image = cv2.imread(im_path)
@@ -77,10 +79,11 @@ else:
             contours[y[i] // ysize].append((x[i], y[i]))
 
     ends = []
-    for i in range(len(contours)):
+    for i in range(len(contours) - 1):
         xs = [contours[i][j][0] for j in range(len(contours[i]))]
+        xnext = [contours[i + 1][j][0] for j in range(len(contours[i + 1]))]
         if len(xs) > 1:
-            length = max(xs) - min(xs)
+            length = max(max(xs), max(xnext) if len(xnext) > 0 else 0) - min(min(xs), min(xnext) if len(xnext) > 0 else max(xs))
             if (length / len(image[0])) > min_length:
                 print(length, len(image[0]))
                 ys = [contours[i][j][1] for j in range(len(contours[i]))]
@@ -101,7 +104,7 @@ else:
     pages = []
     start = 0
     for end in ends:
-        end = end - ysize // 2
+        # end = end - ysize // 2
         if start > end: # if pagebreak already detected for end of last page
             break
         new_page = image[start:end]
@@ -111,6 +114,7 @@ else:
         im = Image.fromarray(new_page)
         pages.append(im)
 
-        start = end + ysize
+        # start = end + ysize
+        start = end
 
     pages[0].save(o_name, "PDF" ,resolution=100.0, save_all=True, append_images=pages[1:])
