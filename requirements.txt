@@ -1,7 +1,7 @@
 pymupdf
 matplotlib
 numpy
-opencv_python==4.5.4.58
+opencv-python-headless
 Pillow==8.4.0
 PyPDF2==1.26.0
 flask
