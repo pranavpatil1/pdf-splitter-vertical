@@ -1,6 +1,8 @@
 pymupdf
-matplotlib==3.4.3
-numpy==1.21.1
+matplotlib
+numpy
 opencv_python==4.5.4.58
 Pillow==8.4.0
 PyPDF2==1.26.0
+flask
+gunicorn
