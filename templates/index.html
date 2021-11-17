@@ -1,13 +1,37 @@
 <!doctype html>
 <html>
   <head>
-    <title>File Upload</title>
+  <meta charset="UTF-8">
+    <title>PDF Splitter</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
+<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:100,300'><link rel="stylesheet" href="{{ url_for('static',filename='index.css') }}">
   </head>
+<script>
+
+</script>
   <body>
-    <h1>File Upload</h1>
-    <form method="POST" action="" enctype="multipart/form-data">
-      <p><input type="file" name="file"></p>
-      <p><input type="submit" value="Submit"></p>
+<!-- partial:index.partial.html -->
+<div class="upload">
+ <div class="upload-files">
+  <header>
+   <p>
+    <i class="fa fa-bars" aria-hidden="true"></i>
+    <span class="up">splitter?</span>
+    <span class="load">I barely know her.</span>
+   </p>
+  </header>
+  <div class="body" id="drop">
+   <i class="fa fa-file-text-o pointer-none" aria-hidden="true"></i>
+   <p class="pointer-none">Want to split OneNote PDFs by problem?<br>Add a horizontal line between problems, then we'll split it for you!<br><br><b>Drag and drop</b> files here <br /> or <a href="" id="triggerFile">browse</a> to begin the upload</p>
+<form method="POST" action="" enctype="multipart/form-data">
+			<input type="file" name="file" onchange="form.submit()"/>
     </form>
+  </div>
+ </div>
+</div>
+<!-- partial -->
+  <script  src="{{ url_for('static',filename='script.js') }}"></script>
+
   </body>
 </html>
