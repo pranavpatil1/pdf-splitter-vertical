@@ -57,7 +57,7 @@ def split(i_name=None, o_name=None, n=0):
         pix.save(im_path)
 
         # convert to binary image
-        image = cv2.imread(im_path)
+        image = cv2.imread(im_path)[...,::-1]
         os.remove(im_path)
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
@@ -84,7 +84,7 @@ def split(i_name=None, o_name=None, n=0):
             x = [c[i][0][0] for i in range(len(c))]
             y = [c[i][0][1] for i in range(len(c))]
             for i in range(len(x)):
-                contours[pixel2window(y[i], image.shape[0])].append((x[i], y[i], contour_count))
+                contours[pixel2window(y[i], image.shape[0], ysize)].append((x[i], y[i], contour_count))
             contour_count += 1
 
         ends = []
@@ -105,7 +105,9 @@ def split(i_name=None, o_name=None, n=0):
                 # length = max(xcurr) - min(xcurr)
                 length = max(length_list)
                 height = max(ycurr) - min(ycurr)
-                if (length / len(image[0])) > min_length and (height / ysize) < max_height:
+                # print(length, length / len(image[0]))
+                if length / len(image[0]) > min_length:
+                    # print('breakkkk')
                     ys = [contours[i][j][1] for j in range(len(contours[i]))]
                     pos = round(sum(ys)/len(ys))
                     if pos not in ends:
@@ -133,3 +135,17 @@ def split(i_name=None, o_name=None, n=0):
             pages[0].save(o_name, "PDF" ,resolution=100.0, save_all=True, append_images=pages[1:])
         else:
             return pages
+
+if len(sys.argv) == 4:
+    i_name = sys.argv[1]
+    o_name = sys.argv[2]
+    n = int(sys.argv[3])
+if len(sys.argv) == 3:
+    i_name = sys.argv[1]
+    o_name = sys.argv[2]
+    n = 0
+else:
+    print ("HELP: python3 splitter.py input.pdf output.pdf")
+    exit(1)
+
+# split(i_name, o_name, n)
