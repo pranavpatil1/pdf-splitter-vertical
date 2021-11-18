@@ -10,21 +10,22 @@ import sys
 import os
 import copy
 
+# convert y-pixel value to index in list of windows for sliding window
+def pixel2window(y, length, ysize):
+    count = 0
+    window_frac = 3
+    for i in range(0, length, ysize // window_frac):
+        if y >= i and y <= i + ysize:
+            return count
+        count += 1
+    return count
 
-def fig2img(fig):
-    """Convert a Matplotlib figure to a PIL Image and return it"""
-    import io
-    buf = io.BytesIO()
-    fig.savefig(buf)
-    buf.seek(0)
-    img = Image.open(buf)
-    return img
-
-def split(i_name, o_name=None, n=0):
+def split(i_name=None, o_name=None, n=0):
     ## PARAMETERS FOR SPLIT
-    ysize = 100
-    min_length = .75
-    
+    ysize = 50          # height of window
+    min_length = .7     # min length for line, fraction of width of page
+    max_height = .2     # max height for line, fraction of height of window
+
     ## if provided, split into n pages of uniform length
     if n != 0:
         print(f"Splitting {i_name} into {n} pages, output to {o_name}")
@@ -51,7 +52,7 @@ def split(i_name, o_name=None, n=0):
         im_path = "page_image.jpg" # intermediate file
         # convert to image
         doc = fitz.open(i_name)
-        page = doc.loadPage(0)  # number of page
+        page = doc.load_page(0)  # number of page
         pix = page.get_pixmap()
         pix.save(im_path)
 
@@ -68,34 +69,56 @@ def split(i_name, o_name=None, n=0):
         # get contours for lines
         cnts = cv2.findContours(detected_lines, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+        
+        # result = image.copy()
+        # for c in cnts:
+        #     cv2.drawContours(result, [c], -1, (36,255,12), 2)
+
+        # cv2.imshow('result', result[3000:])
+        # cv2.waitKey()
 
         # for now split at average x value of each line, 1 page per split
-        contours = [[] for _ in range(image.shape[0] // ysize + 1)] # 20px (y-axis) segments
+        contours = [[] for _ in range(image.shape[0])] # 20px (y-axis) segments
+        contour_count = 0
         for c in cnts:
             x = [c[i][0][0] for i in range(len(c))]
             y = [c[i][0][1] for i in range(len(c))]
             for i in range(len(x)):
-                contours[y[i] // ysize].append((x[i], y[i]))
+                contours[pixel2window(y[i], image.shape[0])].append((x[i], y[i], contour_count))
+            contour_count += 1
 
         ends = []
+
+        # loop through windows and add horizontal line x-values to ends list
         for i in range(len(contours) - 1):
-            xs = [contours[i][j][0] for j in range(len(contours[i]))]
-            xnext = [contours[i + 1][j][0] for j in range(len(contours[i + 1]))]
-            if len(xs) > 1:
-                length = max(max(xs), max(xnext) if len(xnext) > 0 else 0) - min(min(xs), min(xnext) if len(xnext) > 0 else max(xs))
-                if (length / len(image[0])) > min_length:
-                    print(length, len(image[0]))
+            xcurr = [contours[i][j][0] for j in range(len(contours[i]))]
+            ycurr = [contours[i][j][1] for j in range(len(contours[i]))]
+            ids = [contours[i][j][2] for j in range(len(contours[i]))]
+            if len(xcurr) > 0:
+                # length = max(x) - min(x) for each contour
+                ids_unique = list(set(ids))
+                x_by_id = [[] for _ in range(len(ids_unique))]
+                for j in range(len(xcurr)):
+                    x_by_id[ids_unique.index(ids[j])].append(xcurr[j])
+
+                length_list = [max(_) - min(_) for _ in x_by_id]
+                # length = max(xcurr) - min(xcurr)
+                length = max(length_list)
+                height = max(ycurr) - min(ycurr)
+                if (length / len(image[0])) > min_length and (height / ysize) < max_height:
                     ys = [contours[i][j][1] for j in range(len(contours[i]))]
-                    ends.append(round(sum(ys)/len(ys)))
+                    pos = round(sum(ys)/len(ys))
+                    if pos not in ends:
+                        ends.append(pos)
 
         ends.append(len(image))
         ends = sorted(ends)
 
+        ## create new pages
         pages = []
         start = 0
         for end in ends:
-            # end = end - ysize // 2
-            if start > end: # if pagebreak already detected for end of last page
+            if start > end:
                 break
             new_page = image[start:end]
 
@@ -104,7 +127,6 @@ def split(i_name, o_name=None, n=0):
             im = Image.fromarray(new_page)
             pages.append(im)
 
-            # start = end + ysize
             start = end
         
         if o_name != None:
