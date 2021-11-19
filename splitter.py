@@ -136,16 +136,16 @@ def split(i_name=None, o_name=None, n=0):
         else:
             return pages
 
-if len(sys.argv) == 4:
-    i_name = sys.argv[1]
-    o_name = sys.argv[2]
-    n = int(sys.argv[3])
-if len(sys.argv) == 3:
-    i_name = sys.argv[1]
-    o_name = sys.argv[2]
-    n = 0
-else:
-    print ("HELP: python3 splitter.py input.pdf output.pdf")
-    exit(1)
+# if len(sys.argv) == 4:
+#     i_name = sys.argv[1]
+#     o_name = sys.argv[2]
+#     n = int(sys.argv[3])
+# if len(sys.argv) == 3:
+#     i_name = sys.argv[1]
+#     o_name = sys.argv[2]
+#     n = 0
+# else:
+#     print ("HELP: python3 splitter.py input.pdf output.pdf")
+#     exit(1)
 
 # split(i_name, o_name, n)
