@@ -148,4 +148,3 @@ if __name__ == '__main__':
     else:
         print ("HELP: python3 splitter.py input.pdf output.pdf")
         exit(1)
-
