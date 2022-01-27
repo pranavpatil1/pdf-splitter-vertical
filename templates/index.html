@@ -32,7 +32,9 @@
   </header>
   <div class="body" id="drop">
    <i class="fa fa-file-text-o pointer-none" aria-hidden="true"></i>
-   <p class="pointer-none">Want to split OneNote PDFs by problem?<br>Add a horizontal line between problems, then we'll split it for you!<br><br><b>Drag and drop</b> files here <br /> or <a href="" id="triggerFile">browse</a> to begin the upload</p>
+   <p class="pointer-none">Want to split OneNote PDFs by problem?<br>Add a horizontal line between problems, then we'll split it for you!<br><br>
+    Click <a href="{{ url_for('static',filename='Example_splitter_input.pdf') }}">here</a> for an example OneNote input PDF.<br><br>
+    <b>Drag and drop</b> files here <br /> or <a href="" id="triggerFile">browse</a> to begin the upload</p>
 <form method="POST" action="" enctype="multipart/form-data">
 			<input type="file" name="file" onchange="form.submit()"/>
     </form>
