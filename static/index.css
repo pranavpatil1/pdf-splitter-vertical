@@ -13,6 +13,18 @@ body {
   align-items: center;
 }
 
+#select {
+  background-color: #4db6ac;
+  border-radius: 2px;
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
 .upload {
   position: relative;
   width: 600px;
