@@ -14,35 +14,49 @@
   gtag('js', new Date());
 
   gtag('config', 'G-1R4SPSNQZK');
+
 </script>
   </head>
 <script>
 
 </script>
   <body>
-<!-- partial:index.partial.html -->
+
 <div class="upload">
  <div class="upload-files">
   <header>
    <p>
     <i class="fa fa-bars" aria-hidden="true"></i>
-    <span class="up" style="margin-left: 5px">pdf</span>
-    <span class="load" style="margin-left: 1px">splitter</span>
+    <span class="up" style="margin-left: -2px">pdf</span>
+    <span class="load" style="margin-left: -5px">splitter</span>
    </p>
   </header>
+<form name="form" id="form" method="POST" action="" enctype="multipart/form-data">
   <div class="body" id="drop">
    <i class="fa fa-file-text-o pointer-none" aria-hidden="true"></i>
    <p class="pointer-none">Want to split OneNote PDFs by problem?<br>Add a horizontal line between problems, then we'll split it for you!<br><br>
     Click <a href="{{ url_for('static',filename='Example_splitter_input.pdf') }}">here</a> for an example OneNote input PDF.<br><br>
     <b>Drag and drop</b> files here <br /> or <a href="" id="triggerFile">browse</a> to begin the upload</p>
-<form method="POST" action="" enctype="multipart/form-data">
-			<input type="file" name="file" onchange="form.submit()"/>
-    </form>
+			<input id='fileinput' type="file" name="file" onchange="form.submit()"/>
   </div>
  </div>
+    </form>
 </div>
-<!-- partial -->
-  <script  src="{{ url_for('static',filename='script.js') }}"></script>
 
+  <script  src="{{ url_for('static',filename='script.js') }}"></script>
+<script>
+
+
+
+var dropArea = document.getElementById('drop');
+dropArea.addEventListener('drop', handl, false);
+function handl(e) {
+document.getElementById('fileinput').files = e.dataTransfer.files;
+	e.preventDefault();
+  e.stopPropagation();
+document.form.submit();
+};
+
+</script>
   </body>
 </html>

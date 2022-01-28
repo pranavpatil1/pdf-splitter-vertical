@@ -55,21 +55,9 @@ App.init = function () {
     evt.preventDefault();
   };
   $("#drop").ondrop = evt => {
-    $("input[type=file]").files = evt.dataTransfer.files;
-    $("footer").classList.add("hasFiles");
     $("#drop").classList.remove("active");
     evt.preventDefault();
   };
-
-  //upload more
-  $(".importar").addEventListener("click", () => {
-    $(".list-files").innerHTML = "";
-    $("footer").classList.remove("hasFiles");
-    $(".importar").classList.remove("active");
-    setTimeout(() => {
-      $("#drop").classList.remove("hidden");
-    }, 500);
-  });
 
   // input change
   $("input[type=file]").addEventListener("change", handleFileSelect);

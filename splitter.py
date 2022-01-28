@@ -122,7 +122,8 @@ def split(i_name=None, o_name=None, n=0):
         for end in ends:
             if start > end:
                 break
-            new_page = image[start:end]
+            
+            new_page = image[int(start):int(end)]
 
             shape = (len(new_page), len(new_page[0]), 3)
             new_page = np.array(new_page).reshape(shape)

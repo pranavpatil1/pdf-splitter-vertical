@@ -40,6 +40,7 @@ def upload_file():
 
     # make sure file was uplaoded
     uploaded_file = request.files['file']
+    print (uploaded_file.filename)
     if uploaded_file.filename != '':
         filename = uploaded_file.filename
         print (filename)
